@@ -15,7 +15,8 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('product_id');
             $table->integer('quantity');
-            $table->string('new_price');
+            $table->float('new_price');
+            $table->timestamps();
             $table->foreign('product_id')->references('id')
                 ->on('products')->onDelete('cascade');
         });

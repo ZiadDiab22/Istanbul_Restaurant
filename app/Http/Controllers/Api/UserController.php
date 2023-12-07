@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 use App\Http\Controllers\Controller;
+use App\Models\product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -74,6 +75,52 @@ class UserController extends Authenticatable
         return response()->json([
             'status' => true,
             'message' => "User logged out successfully"
+        ]);
+    }
+
+
+    public function searchProducts(Request $request)
+    {
+        $var = product::where('name', 'like', '%' . $request->value . '%')->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $var,
+        ]);
+    }
+
+    public function searchOffers(Request $request)
+    {
+        $var = product::where('name', 'like', '%' . $request->value . '%')
+            ->join('offers as o', 'o.product_id', 'products.id')
+            ->get([
+                'o.id as offer_id', 'product_id', 'o.quantity as offer_quantity',
+                'new_price', 'name', 'type_id', 'discription', 'price as old_price',
+                'source_price', 'img_url'
+            ]);
+
+        return response()->json([
+            'status' => true,
+            'data' => $var,
+        ]);
+    }
+
+    public function searchProductsAndOffers(Request $request)
+    {
+        $products = product::where('name', 'like', '%' . $request->value . '%')->get();
+
+        $offers = product::where('name', 'like', '%' . $request->value . '%')
+            ->join('offers as o', 'o.product_id', 'products.id')
+            ->get([
+                'o.id as offer_id', 'product_id', 'o.quantity as offer_quantity',
+                'new_price', 'name', 'type_id', 'discription', 'price as old_price',
+                'source_price', 'img_url'
+            ]);
+
+        return response()->json([
+            'status' => true,
+            'products' => $products,
+            'offers' => $offers,
         ]);
     }
 }
