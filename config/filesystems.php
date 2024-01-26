@@ -49,6 +49,24 @@ return [
             'root' => public_path('UsersPhotos'),
         ],
 
+        'publicProducts' => [
+            'driver' => 'local',
+            'root' => public_path('Products'),
+        ],
+
+        'publicLogos' => [
+            'driver' => 'local',
+            'root' => public_path('Logos'),
+        ],
+        'publicAds' => [
+            'driver' => 'local',
+            'root' => public_path('Ads'),
+        ],
+        'publicOrders' => [
+            'driver' => 'local',
+            'root' => public_path('Orders'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

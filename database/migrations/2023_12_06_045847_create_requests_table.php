@@ -16,9 +16,12 @@ return new class extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('delivery_ser_id');
             $table->unsignedInteger('employee_id')->nullable()->default(null);
+            $table->unsignedInteger('state_id')->nullable()->default(1);
             $table->timestamps();
             $table->foreign('user_id')->references('id')
                 ->on('users')->onDelete('cascade');
+            $table->foreign('state_id')->references('id')
+                ->on('request_states')->onDelete('cascade');
             $table->foreign('employee_id')->references('id')
                 ->on('users')->onDelete('cascade');
             $table->foreign('delivery_ser_id')->references('id')

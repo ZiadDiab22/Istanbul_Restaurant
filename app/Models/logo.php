@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class complaint extends Model
+class logo extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+
     protected $fillable = [
-        'user_id', 'name', 'created_at', 'updated_at'
+        'img_url', 'selected',
     ];
 }

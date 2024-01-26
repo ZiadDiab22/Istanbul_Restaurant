@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('delivery_services', function (Blueprint $table) {
+        Schema::create('payment_ways', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('city_id')->unique();
-            $table->float('price');
+            $table->string('name');
             $table->boolean('blocked')->default(0);
-            $table->foreign('city_id')->references('id')
-                ->on('cities')->onDelete('cascade');
         });
     }
 
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('delivery_services');
+        Schema::dropIfExists('payment_ways');
     }
 };

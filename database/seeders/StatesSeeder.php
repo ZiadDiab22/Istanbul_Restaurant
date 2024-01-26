@@ -5,10 +5,9 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\users_type;
+use App\Models\request_state;
 
-
-class UsersTypesSeeder extends Seeder
+class StatesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,17 +15,17 @@ class UsersTypesSeeder extends Seeder
     public function run(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('users_types')->truncate();
+        DB::table('request_states')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        users_type::create([
-            "name" => "normal",
+        request_state::create([
+            "name" => "processing",
         ]);
-        users_type::create([
-            "name" => "employee",
+        request_state::create([
+            "name" => "in progress",
         ]);
-        users_type::create([
-            "name" => "admin",
+        request_state::create([
+            "name" => "completed",
         ]);
     }
 }

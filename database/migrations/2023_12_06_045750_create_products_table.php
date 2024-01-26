@@ -15,11 +15,14 @@ return new class extends Migration
             $table->increments('id');
             $table->string('name');
             $table->unsignedInteger('type_id');
-            $table->string('discription');
+            $table->string('disc');
+            $table->string('long_disc')->nullable()->default(null);
             $table->integer('price');
             $table->integer('quantity');
             $table->integer('source_price');
-            $table->string('img_url');
+            $table->string('code');
+            $table->string('img_url')->nullable()->default(null);;
+            $table->boolean('visible')->nullable()->default(1);
             $table->foreign('type_id')->references('id')
                 ->on('products_types')->onDelete('cascade');
         });

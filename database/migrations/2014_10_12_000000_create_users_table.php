@@ -18,9 +18,10 @@ return new class extends Migration
             $table->unsignedInteger('type_id');
             $table->string('email', 50)->unique();
             $table->string('password')->unique();
-            $table->string('phone_no', 18);
+            $table->string('phone_no')->unique();
             $table->string('img_url')->nullable()->default(null);
             $table->integer('badget')->nullable()->default(0);
+            $table->boolean('blocked')->default(0);
             $table->timestamps();
             $table->foreign('city_id')->references('id')
                 ->on('cities')->onDelete('cascade');

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('product_id');
             $table->integer('quantity');
+            $table->float('percentage');
             $table->float('new_price');
             $table->timestamps();
             $table->foreign('product_id')->references('id')

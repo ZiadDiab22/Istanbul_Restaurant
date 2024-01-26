@@ -5,10 +5,9 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\users_type;
+use App\Models\payment_way;
 
-
-class UsersTypesSeeder extends Seeder
+class PayWaysSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,17 +15,14 @@ class UsersTypesSeeder extends Seeder
     public function run(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('users_types')->truncate();
+        DB::table('payment_ways')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        users_type::create([
-            "name" => "normal",
+        payment_way::create([
+            "name" => "cash",
         ]);
-        users_type::create([
-            "name" => "employee",
-        ]);
-        users_type::create([
-            "name" => "admin",
+        payment_way::create([
+            "name" => "electronic",
         ]);
     }
 }

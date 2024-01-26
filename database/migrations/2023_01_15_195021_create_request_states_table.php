@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('delivery_services', function (Blueprint $table) {
+        Schema::create('request_states', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('city_id')->unique();
-            $table->float('price');
-            $table->boolean('blocked')->default(0);
-            $table->foreign('city_id')->references('id')
-                ->on('cities')->onDelete('cascade');
+            $table->string('name');
         });
     }
 
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('delivery_services');
+        Schema::dropIfExists('request_states');
     }
 };

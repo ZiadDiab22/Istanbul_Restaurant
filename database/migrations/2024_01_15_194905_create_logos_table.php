@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('delivery_services', function (Blueprint $table) {
+        Schema::create('logos', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('city_id')->unique();
-            $table->float('price');
-            $table->boolean('blocked')->default(0);
-            $table->foreign('city_id')->references('id')
-                ->on('cities')->onDelete('cascade');
+            $table->string('img_url');
+            $table->boolean('selected')->nullable()->default(0);
         });
     }
 
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('delivery_services');
+        Schema::dropIfExists('logos');
     }
 };

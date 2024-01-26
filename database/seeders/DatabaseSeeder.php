@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
             CitiesSeeder::class,
             UsersTypesSeeder::class,
             ProductsTypesSeeder::class,
+            PayWaysSeeder::class,
+            StatesSeeder::class,
+            UsersSeeder::class,
         ]);
     }
 }
