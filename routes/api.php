@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\api\UserController;
-use App\Http\Controllers\api\AdminController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\AdminController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
