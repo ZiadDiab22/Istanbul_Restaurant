@@ -225,11 +225,19 @@ class UserController extends Authenticatable
 
     public function showProducts()
     {
-        $var = product::where('visible', 1)->get();
+        $products = product::where('visible', 1)
+            ->join('products_types', 'type_id', 'products_types.id')
+            ->get([
+                'products.id', 'products.name', 'type_id', 'products_types.name as type_name', 'disc',
+                'long_disc', 'price', 'quantity', 'source_price', 'code', 'img_url'
+            ]);
+
+        $types = products_type::get();
 
         return response([
             'status' => true,
-            'products' => $var
+            'products' => $products,
+            'products_types' => $types
         ], 200);
     }
 
