@@ -51,6 +51,7 @@ Route::post("editDelSer", [AdminController::class, "editDelSer"]);
 Route::get("showAdsOrdersLogos", [AdminController::class, "showAdsOrdersLogos"]);
 Route::post("addOffer", [AdminController::class, "addOffer"]);
 Route::post("editOffer", [AdminController::class, "editOffer"]);
+Route::get("getLogoImg", [UserController::class, "getLogoImg"]);
 /**********/
 
 Route::group(["middleware" => ["auth:api"]], function () {

@@ -91,11 +91,13 @@ class AdminController extends Controller
         if ($request->has('visibile')) $product->visibile = $request->visibile;
         if ($request->has('img_url')) {
             $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
+            Storage::disk('public_htmlProducts')->put($image1, file_get_contents($request->img_url));
+            $image1 = asset('products/' . $image1);
             $product->img_url = $image1;
-            Storage::disk('publicProducts')->put($image1, file_get_contents($request->img_url));
         }
+
         $product->save();
-        $var = product::where('visible', 1)->get();
+        $var = product::get();
 
         return response()->json([
             'status' => true,
@@ -114,7 +116,7 @@ class AdminController extends Controller
             'quantity' => 'required',
             'source_price' => 'required',
             'code' => 'required',
-            'img_url' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'img_url' => 'image|mimes:jpg,png,jpeg,gif,webg,svg|max:2048',
         ]);
 
         if ($request->has('long_disc')) {
@@ -122,14 +124,14 @@ class AdminController extends Controller
         }
         if ($request->has('img_url')) {
             $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
-            Storage::disk('publicProducts')->put($image1, file_get_contents($request->img_url));
-            $image1 = asset('public/Products/' . $image1);
+            Storage::disk('public_htmlProducts')->put($image1, file_get_contents($request->img_url));
+            $image1 = asset('products/' . $image1);
             $validatedData['img_url'] = $image1;
         }
 
         product::create($validatedData);
 
-        $var = product::where('visible', 1)->get();
+        $var = product::get();
 
         return response()->json([
             'status' => true,
@@ -146,7 +148,7 @@ class AdminController extends Controller
         else $var->visible = 0;
         $var->save();
 
-        $var = product::where('visible', 1)->get();
+        $var = product::get();
 
         return response([
             'status' => true,
@@ -206,10 +208,11 @@ class AdminController extends Controller
 
         $product = Product::find($request->id);
         $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
+        Storage::disk('public_htmlProducts')->put($image1, file_get_contents($request->img_url));
+        $image1 = asset('products/' . $image1);
         $product->img_url = $image1;
         $product->save();
 
-        Storage::disk('publicProducts')->put($image1, file_get_contents($request->img_url));
         return response([
             'status' => true,
             'message' => "done successfully"
@@ -223,17 +226,20 @@ class AdminController extends Controller
         ]);
 
         $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
-        Storage::disk('publicLogos')->put($image1, file_get_contents($request->img_url));
+        Storage::disk('public_htmlLogos')->put($image1, file_get_contents($request->img_url));
 
-        $image1 = asset('public/Logos/' . $image1);
+        $image1 = asset('Logos/' . $image1);
 
         $validatedData['img_url'] = $image1;
 
         logo::create($validatedData);
+        $var = logo::get();
+
 
         return response([
             'status' => true,
             'message' => "done successfully",
+            'data' => $var,
             'image_path' => $image1,
         ], 200);
     }
@@ -254,8 +260,10 @@ class AdminController extends Controller
         DB::table('logos')->update(['selected' => 0]);
         DB::table('logos')->where('id', $id)->update(['selected' => 1]);
 
+        $var = logo::get();
         return response([
             'status' => true,
+            'data' => $var,
             'message' => "done successfully"
         ], 200);
     }
@@ -295,15 +303,18 @@ class AdminController extends Controller
         ]);
 
         $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
-        Storage::disk('publicAds')->put($image1, file_get_contents($request->img_url));
+        Storage::disk('public_htmlAds')->put($image1, file_get_contents($request->img_url));
 
-        $image1 = asset('public/Ads/' . $image1);
+        $image1 = asset('Ads/' . $image1);
         $validatedData['img_url'] = $image1;
         ad::create($validatedData);
+
+        $var = ad::get();
 
         return response([
             'status' => true,
             'message' => "done successfully",
+            'data' => $var,
             'image_path' => $image1,
         ], 200);
     }
@@ -316,7 +327,7 @@ class AdminController extends Controller
         return response([
             'status' => true,
             'message' => 'deleted successfully',
-            'Data' => $var,
+            'data' => $var,
         ], 200);
     }
 
@@ -327,18 +338,20 @@ class AdminController extends Controller
         ]);
 
         $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
-        Storage::disk('publicOrders')->put($image1, file_get_contents($request->img_url));
+        Storage::disk('public_htmlOrders')->put($image1, file_get_contents($request->img_url));
 
-        $image1 = asset('public/Orders/' . $image1);
+        $image1 = asset('Orders/' . $image1);
 
         $validatedData['img_url'] = $image1;
 
         order::create($validatedData);
+        $orders = order::get();
 
         return response([
             'status' => true,
             'message' => "done successfully",
             'image_path' => $image1,
+            'data' => $orders,
         ], 200);
     }
 
@@ -397,8 +410,8 @@ class AdminController extends Controller
 
         $var = product::find($request->id);
         $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
-        Storage::disk('publicProducts')->put($image1, file_get_contents($request->img_url));
-        $image1 = asset('public/Products/' . $image1);
+        Storage::disk('public_htmlProducts')->put($image1, file_get_contents($request->img_url));
+        $image1 = asset('Products/' . $image1);
         $var->img_url = $image1;
         $var->save();
 
@@ -444,20 +457,38 @@ class AdminController extends Controller
         } else {
             $validatedData['new_price'] = ($product->price * (100 - $request->percentage)) / 100;
             offer::create($validatedData);
-            $var = offer::get();
             $product->quantity -= $request->quantity;
             $product->save();
         }
+
+        $offers = product::join('offers as o', 'o.product_id', 'products.id')
+            ->join('products_types as t', 't.id', 'products.type_id')
+            ->where('visible', 1)->get([
+                'o.id as offer_id', 'product_id', 'o.quantity as offer_quantity', 'products.quantity as product_quantity',
+                'new_price', 'percentage', 'products.name', 'type_id', 't.name as type_name', 'disc',
+                'long_disc', 'price as old_price', 'source_price', 'img_url', 'code as product_code', 'visible', 'created_at', 'updated_at'
+            ]);
+
+        $products = product::join('products_types', 'type_id', 'products_types.id')
+            ->get([
+                'products.id', 'products.name', 'type_id', 'products_types.name as type_name', 'disc',
+                'long_disc', 'price', 'quantity', 'source_price', 'code', 'img_url', 'visible'
+            ]);
+
+        $types = products_type::get();
+
         return response()->json([
             'status' => true,
             'message' => 'added Successfully',
-            'offers' => $var,
+            'offers' => $offers,
+            'products' => $products,
+            'types' => $types,
         ]);
     }
 
     public function editOffer(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'offer_id' => 'required',
             'quantity' => 'required',
             'percentage' => 'required',
@@ -489,12 +520,28 @@ class AdminController extends Controller
         $offer->save();
         $product->save();
 
-        $var = offer::get();
+        $offers = product::join('offers as o', 'o.product_id', 'products.id')
+            ->join('products_types as t', 't.id', 'products.type_id')
+            ->where('visible', 1)->get([
+                'o.id as offer_id', 'product_id', 'o.quantity as offer_quantity', 'products.quantity as product_quantity',
+                'new_price', 'percentage', 'products.name', 'type_id', 't.name as type_name', 'disc',
+                'long_disc', 'price as old_price', 'source_price', 'img_url', 'code as product_code', 'visible', 'created_at', 'updated_at'
+            ]);
+
+        $products = product::join('products_types', 'type_id', 'products_types.id')
+            ->get([
+                'products.id', 'products.name', 'type_id', 'products_types.name as type_name', 'disc',
+                'long_disc', 'price', 'quantity', 'source_price', 'code', 'img_url', 'visible'
+            ]);
+
+        $types = products_type::get();
 
         return response()->json([
             'status' => true,
             'message' => 'added Successfully',
-            'offers' => $var,
+            'offers' => $offers,
+            'products' => $products,
+            'types' => $types,
         ]);
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ad;
 use App\Models\complaint;
 use App\Models\favourite;
+use App\Models\logo;
 use App\Models\order;
 use App\Models\product;
 use App\Models\products_type;
@@ -37,8 +38,9 @@ class UserController extends Authenticatable
 
         if ($request->has('img_url')) {
             $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
+            Storage::disk('public_htmlUsersPhotos')->put($image1, file_get_contents($request->img_url));
+            $image1 = asset('UsersPhotos/' . $image1);
             $validatedData['img_url'] = $image1;
-            Storage::disk('publicUsersPhotos')->put($image1, file_get_contents($request->img_url));
         }
 
         $user = User::create($validatedData);
@@ -72,8 +74,9 @@ class UserController extends Authenticatable
 
         if ($request->has('img_url')) {
             $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
+            Storage::disk('public_htmlUsersPhotos')->put($image1, file_get_contents($request->img_url));
+            $image1 = asset('UsersPhotos/' . $image1);
             $validatedData['img_url'] = $image1;
-            Storage::disk('publicUsersPhotos')->put($image1, file_get_contents($request->img_url));
         }
 
         $user = User::create($validatedData);
@@ -225,11 +228,10 @@ class UserController extends Authenticatable
 
     public function showProducts()
     {
-        $products = product::where('visible', 1)
-            ->join('products_types', 'type_id', 'products_types.id')
+        $products = product::join('products_types', 'type_id', 'products_types.id')
             ->get([
                 'products.id', 'products.name', 'type_id', 'products_types.name as type_name', 'disc',
-                'long_disc', 'price', 'quantity', 'source_price', 'code', 'img_url'
+                'long_disc', 'price', 'quantity', 'source_price', 'code', 'img_url', 'visible'
             ]);
 
         $types = products_type::get();
@@ -249,10 +251,11 @@ class UserController extends Authenticatable
 
         $user = User::find(auth()->user()->id);
         $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
-        $user->img_url = $image1;
+        Storage::disk('public_htmlUsersPhotos')->put($image1, file_get_contents($request->img_url));
+        $image1 = asset('UsersPhotos/' . $image1);
+        $validatedData['img_url'] = $image1;
         $user->save();
 
-        Storage::disk('publicUsersPhotos')->put($image1, file_get_contents($request->img_url));
         return response([
             'status' => true,
             'message' => "done successfully"
@@ -266,9 +269,9 @@ class UserController extends Authenticatable
         ]);
 
         $image1 = Str::random(32) . "." . $request->img_url->getClientOriginalExtension();
-        Storage::disk('publicUsersPhotos')->put($image1, file_get_contents($request->img_url));
+        Storage::disk('public_htmlUsersPhotos')->put($image1, file_get_contents($request->img_url));
 
-        $imagePath = asset('public/' . $image1);
+        $imagePath = asset('UsersPhotos/' . $image1);
 
         return response([
             'status' => true,
@@ -380,15 +383,27 @@ class UserController extends Authenticatable
 
     public function showOffers()
     {
-        $var = product::join('offers as o', 'o.product_id', 'products.id')
+        $offers = product::join('offers as o', 'o.product_id', 'products.id')
+            ->join('products_types as t', 't.id', 'products.type_id')
             ->where('visible', 1)->get([
-                'o.id as offer_id', 'product_id', 'o.quantity as offer_quantity',
-                'new_price', 'name', 'type_id', 'disc', 'price as old_price',
-                'source_price', 'img_url'
+                'o.id as offer_id', 'product_id', 'o.quantity as offer_quantity', 'products.quantity as product_quantity',
+                'new_price', 'percentage', 'products.name', 'type_id', 't.name as type_name', 'disc',
+                'long_disc', 'price as old_price', 'source_price', 'img_url', 'code as product_code', 'visible', 'created_at', 'updated_at'
             ]);
+
+        $products = product::join('products_types', 'type_id', 'products_types.id')
+            ->get([
+                'products.id', 'products.name', 'type_id', 'products_types.name as type_name', 'disc',
+                'long_disc', 'price', 'quantity', 'source_price', 'code', 'img_url', 'visible'
+            ]);
+
+        $types = products_type::get();
+
         return response()->json([
             'status' => true,
-            'data' => $var,
+            'offers' => $offers,
+            'products' => $products,
+            'products_types' => $types
         ]);
     }
 
@@ -415,5 +430,25 @@ class UserController extends Authenticatable
             'top_products' => $top_products,
             'top_offers' => $top_offers,
         ]);
+    }
+
+    public function getLogoImg()
+    {
+
+        $name = logo::where('selected', 1)->get('img_url');
+
+        if (count($name) == 0)
+            return response()->json([
+                'status' => false,
+                'msg' => 'no photo selected',
+            ]);
+
+        $parsedUrl = parse_url($name[0]['img_url']);
+
+        if ($parsedUrl !== false && isset($parsedUrl['path'])) {
+            $relativePath = Str::replaceFirst('Logos', 'public_html/Logos', $parsedUrl['path']);
+        }
+
+        return response()->file(base_path($relativePath));
     }
 }

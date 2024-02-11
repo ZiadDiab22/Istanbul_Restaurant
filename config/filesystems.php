@@ -36,13 +36,46 @@ return [
             'throw' => false,
         ],
 
+        'public_htmlProducts' => [
+            'driver' => 'local',
+            'root' => base_path('public_html/products'), // Path outside public directory
+            'url' => env('APP_URL') . '/public_html/products',
+            'visibility' => 'public',
+        ],
+        'public_htmlAds' => [
+            'driver' => 'local',
+            'root' => base_path('public_html/Ads'), // Path outside public directory
+            'url' => env('APP_URL') . '/public_html/Ads',
+            'visibility' => 'public',
+        ],
+        'public_htmlLogos' => [
+            'driver' => 'local',
+            'root' => base_path('public_html/Logos'), // Path outside public directory
+            'url' => env('APP_URL') . '/public_html/Logos',
+            'visibility' => 'public',
+        ],
+        'public_htmlOrders' => [
+            'driver' => 'local',
+            'root' => base_path('public_html/Orders'), // Path outside public directory
+            'url' => env('APP_URL') . '/public_html/Orders',
+            'visibility' => 'public',
+        ],
+        'public_htmlUsersPhotos' => [
+            'driver' => 'local',
+            'root' => base_path('public_html/UsersPhotos'), // Path outside public directory
+            'url' => env('APP_URL') . '/public_html/UsersPhotos',
+            'visibility' => 'public',
+        ],
+
+
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL') . '/storage',
+            'root' => public_path('../public_html'), // Adjusted to point to public_html
+            'url' => env('APP_URL') . '/public_html', // Adjusted URL accordingly
             'visibility' => 'public',
             'throw' => false,
         ],
+
 
         'publicUsersPhotos' => [
             'driver' => 'local',
