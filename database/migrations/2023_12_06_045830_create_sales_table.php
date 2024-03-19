@@ -15,7 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('product_id');
             $table->unsignedInteger('user_id');
-            $table->integer('price');
+            $table->float('price');
             $table->integer('quantity');
             $table->boolean('is_offer');
             $table->timestamps();

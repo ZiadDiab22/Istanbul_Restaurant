@@ -14,12 +14,17 @@ return new class extends Migration
         Schema::create('requests', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('delivery_ser_id');
+            $table->unsignedInteger('delivery_ser_id')->nullable()->default(null);
             $table->unsignedInteger('employee_id')->nullable()->default(null);
-            $table->unsignedInteger('state_id')->nullable()->default(1);
+            $table->unsignedInteger('state_id')->nullable()->default(null);
+            $table->unsignedInteger('discount_id')->nullable()->default(null);
+            $table->boolean('discount_app')->nullable()->default(false);
+            $table->enum('payment', ['cash', 'electronic waiting', 'electronic done']);
             $table->timestamps();
             $table->foreign('user_id')->references('id')
                 ->on('users')->onDelete('cascade');
+            $table->foreign('discount_id')->references('id')
+                ->on('discounts')->onDelete('cascade');
             $table->foreign('state_id')->references('id')
                 ->on('request_states')->onDelete('cascade');
             $table->foreign('employee_id')->references('id')

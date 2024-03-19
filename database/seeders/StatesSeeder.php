@@ -19,13 +19,16 @@ class StatesSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         request_state::create([
-            "name" => "processing",
+            "name" => "new",
         ]);
         request_state::create([
-            "name" => "in progress",
+            "name" => "working",
         ]);
         request_state::create([
-            "name" => "completed",
+            "name" => "ended",
+        ]);
+        request_state::create([
+            "name" => "cancelled",
         ]);
     }
 }

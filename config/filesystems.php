@@ -42,6 +42,12 @@ return [
             'url' => env('APP_URL') . '/public_html/products',
             'visibility' => 'public',
         ],
+        'public_htmlCVs' => [
+            'driver' => 'local',
+            'root' => base_path('public_html/CVs'),
+            'url' => env('APP_URL') . '/public_html/CVs',
+            'visibility' => 'public',
+        ],
         'public_htmlAds' => [
             'driver' => 'local',
             'root' => base_path('public_html/Ads'), // Path outside public directory
